@@ -1,0 +1,6 @@
+cmake-build-debug/*
+runtime/AprofHooks/prof-hook.o
+stubs/*/bin/
+stubs/*/build/
+stubs/*/inputs/
+stubs/*/results/
