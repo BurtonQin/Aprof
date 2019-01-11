@@ -9,6 +9,7 @@ cd ${PROJECT_DIR}
 mkdir cmake-build-debug
 cd cmake-build-debug/
 cmake ..
+make
 
 cd ${PROJECT_DIR}/runtime/AprofHooks/
 make
