@@ -27,8 +27,8 @@ APROF=aproflib
 
 all: ${TARGET}
 
-${TARGET}: ${TARGET}.inline.bc ${APROF_LIB}
-	${CXX} ${CFLAGS} ${LDFLAGS} $< -l${APROF_LIB} -lm -lrt -o $@
+${TARGET}: ${TARGET}.inline.bc
+	${CXX} ${CFLAGS} ${LDFLAGS} $< -lm -lrt -o $@
 
 ${TARGET}.inline.bc: ${TARGET}.pre.inline.bc ${INLINE_PASS}
 	opt -load ${INLINE_PASS} -func-inline -lib-inline 0 $< > $@
