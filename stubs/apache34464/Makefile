@@ -3,7 +3,7 @@ CFLAGS=-O0 -Xclang -disable-O0-optnone -g -flto
 LDFLAGS=-use-gold-plugin -Wl,-plugin-opt=save-temps
 TARGET=target
 
-PROJECT_DIR="/home/boqin/Projects/Aprof"
+PROJECT_DIR=/home/boqin/Projects/Aprof
 BUILD_LIB_DIR=${PROJECT_DIR}/cmake-build-debug/lib
 RUNTIME_DIR=${PROJECT_DIR}/cmake-build-debug/runtime
 BUG_DIR=${PROJECT_DIR}/stubs/apache34464
@@ -39,8 +39,8 @@ ${TARGET}.pre.inline.bc: ${TARGET}.inst.bc ${APROF}.inline.bc
 ${APROF}.inline.bc: ${APROF_LIB} ${INLINE_PASS}
 	opt -load ${INLINE_PASS} -func-inline -lib-inline 1 $< > $@
 
-${TARGET}.inst.bc: ${TARGET}.mark.id.bc ${APROF_PASS}
-	opt -load ${APROF_PASS} -instrument-hooks -not-optimize 1 -strFileName ${FUNC_NAME_ID} $< > $@
+${TARGET}.inst.bc ${FUNC_NAME_ID}: ${TARGET}.mark.id.bc ${APROF_PASS}
+	opt -load ${APROF_PASS} -instrument-hooks -not-optimize 1 -strFileName ${FUNC_NAME_ID} $< > ${TARGET}.inst.bc
 
 ${TARGET}.mark.id.bc: ${TARGET}.bc.id ${MARK_PASS}
 	opt -load ${MARK_PASS} -mark-flags -not-optimize 1 $< > $@
@@ -54,7 +54,7 @@ ${TARGET}.merge.bc: ${TARGET}.bc
 ${TARGET}.bc: ${SRC_FILE}
 	${CXX} ${CFLAGS} ${SRC_FILE} -c -o $@
 
-install:
+install: ${TARGET} ${FUNC_NAME_ID}
 	cp ${TARGET} ${BIN_DIR}
 	cp ${FUNC_NAME_ID} ${RESULTS_DIR} 
 
