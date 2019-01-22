@@ -1,7 +1,8 @@
 cmake-build-debug/*
 .idea/*
 runtime/AprofHooks/prof-hook.o
-stubs/*/bin/
-stubs/*/build/
-stubs/*/inputs/
-stubs/*/results/
+runtime/AprofLogger/AprofLogger
+stubs/*
+!stubs/apache34464/Makefile
+!stubs/apache34464/run_exe_time.py
+!stubs/apache34464/Telnet.c

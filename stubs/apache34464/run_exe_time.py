@@ -12,10 +12,10 @@ from pathlib import Path
 import subprocess
 import time
 try:
-    from subprocess import DEVNULL # py3k
+	from subprocess import DEVNULL # py3k
 except ImportError:
-    import os
-    DEVNULL = open(os.devnull, 'wb')
+	import os
+	DEVNULL = open(os.devnull, 'wb')
 
 PROJECT_DIR="/home/boqin/Projects/Aprof"
 
@@ -37,16 +37,13 @@ def generate_input(i):
 # exec 'target file_name song' and record runtime.
 # @param target: the exe file, used to test runtime
 # @param result: the result file, store runtime results
-def run_time_command(target, result, my_env=None):
+def run_mem_command(target, my_env=None):
 
 	print(target)
 
-#	output_path = "tmp.txt"
-#	outfile = open(output_path, "w")
-	
 	inputs = []
 	exe_times = []
-	for i in range(1000, 10000, 500):
+	for i in range(100, 10000, 500):
 		for x in range(1):
 			inputs.append(i)
 			file_name = generate_input(i)
@@ -54,24 +51,42 @@ def run_time_command(target, result, my_env=None):
 			start = time.time()
 			if my_env:
 				subprocess.run(command, stdout=DEVNULL, env=my_env, check=True)
-				#subprocess.run(command, stdout=outfile, env=my_env, check=True)
-				#subprocess.run(command, env=my_env, check=True)
 			else:
 				subprocess.run(command, stdout=DEVNULL, check=True)
-				#subprocess.run(command, stdout=outfile, check=True)
-				#subprocess.run(command, env=my_env, check=True)
 			exe_times.append('%.5f' % (time.time() - start))
 		dump_mem()
-	
-		df = pd.DataFrame(data={'inputs': inputs, 'time': exe_times})
-		df.to_csv(result, index=False)
 	
 		sum = 0.0
 		for t in exe_times:
 			sum += float(t)
 		print('%.5f' % (sum/len(exe_times)))
-	
-	#	outfile.close()
+
+
+def run_time_command(target, result, my_env=None):
+
+	print(target)
+
+	inputs = []
+	exe_times = []
+	i = 5000
+	for x in range(20):
+		inputs.append(i)
+		file_name = generate_input(i)
+		command = [target, file_name, CONSTANT_SONG]
+		start = time.time()
+		if my_env:
+		    subprocess.run(command, env=my_env, check=True)
+		else:
+		    subprocess.run(command, env=my_env, check=True)
+		exe_times.append('%.5f' % (time.time() - start))
+
+	df = pd.DataFrame(data={'inputs': inputs, 'time': exe_times})
+	df.to_csv(result, index=False)
+
+	sum = 0.0
+	for t in exe_times:
+		sum += float(t)
+	print('%.5f' % (sum/len(exe_times)))
 
 
 # cd build; make -f ../Makefile.clonesample OP_LEVEL=2 ELSEIF=-bElseIf install; cd ..
@@ -102,7 +117,8 @@ def run_get_time():
 	target = os.path.join(target_dir, 'target')
 	result = os.path.join(result_dir, 'runtime_result.csv')
 
-	run_time_command(target, result)
+	#run_time_command(target, result)
+	run_mem_command(target)
 
 
 # dump shared mem to logger
@@ -126,6 +142,7 @@ def collect_log():
 def make_dir():
 	
 	subprocess.run("mkdir -p bin build inputs results", shell=True)
+
 
 if __name__ == '__main__':
 
